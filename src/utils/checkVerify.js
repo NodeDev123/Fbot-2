@@ -1,12 +1,24 @@
 // import channels from "../config/channels.json" assert { type: 'json' };
 
-export async function accountValid(ctx) {
-    // const channels = [-1002012624574];
-    const channels = [-1001942782842, -1002084203922]; // 
+import prisma from "../config/prisma.js";
 
-    const result = await channels.reduce(async (statPromise, channelId) => {
+export async function accountValid(ctx) {
+    const CHANNELS = await prisma.channels.findMany({
+        where: {
+            type: "main",
+            joinRequest: false,
+            processStatus: {
+                notIn: ["0", "1", "2"]
+            }
+        },
+        select: {
+            tgID: true
+        }
+    });
+
+    const result = await CHANNELS.reduce(async (statPromise, channel) => {
         const stat = await statPromise;
-        const user = await ctx.telegram.getChatMember(channelId, ctx.from.id);
+        const user = await ctx.telegram.getChatMember(channel.tgID, ctx.from.id);
         const userLeft = !(user.status === "left" || user.status === "kicked")
 
         return stat * userLeft

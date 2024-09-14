@@ -1,10 +1,20 @@
-function getLinks() {
-    const LINKS = ["https://t.me/+h3diVUN1_X85NGQ0", "https://t.me/+g6CKCKiJfDk3OWE0", "https://t.me/+Rqs6ApUuQ2gzNTk0", "https://t.me/+T29nk4rBMhQ4MWZk", "https://t.me/+VhYQAvbPQ-A2NzQ8"]
+import prisma from "./prisma.js";
 
-    return LINKS.reduce((prev, link) => prev + `👉 ${link}\n\n`, "");
-    //  - PAROLES
+async function getLinks() {
+    const CHANNELS = await prisma.channels.findMany({
+        where: {
+            type: "main",
+            processStatus: {
+                notIn: ["0", "1", "2"]
+            }
+        },
+        select: {
+            link: true
+        }
+    });
+
+    return CHANNELS.reduce((prev, channel) => prev + `👉 ${channel.link}\n\n`, "");
 }
-
 const lang = {
     en: {
         welcome: "Congratulations! Your account is all set! 🎉\n\nFind out how to boost your earnings by clicking on '📋 Procedure 📋' under.💸",
@@ -51,8 +61,8 @@ oneyAf
         settings(user) {
             return `🔧 Account Settings:\n\n🤴🏻 Username =  ${user.userName}\n🆔 User ID = ${user.userId}\n💼 Withdrawal Number = ${user.accountNumber}\n\n💹It will be used to send your money. \nClick the button 🔽 below to add or modify your number. `;
         },
-        start(ctx) {
-            return `Welcome <b>${ctx.from.first_name}</b> to Free Money Bot, 🚀\n\nI can help you win up to 300,000 FCFA 💰 per month.\n\nTo start, you must join all my channels. 📲\n\n${getLinks()}`;
+        async start(ctx) {
+            return `Welcome <b>${ctx.from.first_name}</b> to Free Money Bot, 🚀\n\nI can help you win up to 300,000 FCFA 💰 per month.\n\nTo start, you must join all my channels. 📲\n\n${await getLinks()}`;
         },
         bonus(hours, mins, secs) {
             return `🚀 Current Bonus Already Claimed!\n\n👾👾 Be back in precisely ${hours} hour(s) ${mins} minutes and ${secs} seconds to claim your next bonus! ⏳`
@@ -104,8 +114,8 @@ https://t.me/FreeMoneyAfrrq_bot?start=user${ctx.from.id}
         settings(user) {
             return `🔧 Paramètres du compte:\n\nNom Utilisateur = ${user.userName}\n🆔 ID Utilisateur = ${user.userId}\n💼 Numéro de retrait = ${user.accountNumber}\n\n💹Il sera utilisé pour envoyer ton argent.\nClique sur le bouton 🔽 ci-dessous pour l’ajouter ou le changer`
         },
-        start(ctx) {
-            return `Bienvenue <b>${ctx.from.first_name}</b> sur Free Money Bot, 🚀\n\nJe peux te faire gagner jusqu’à 300 000 FCFA 💰 par mois.\n\nPour commencer, vous devez rejoindre tous mes canaux. 📲\n\n${getLinks()}`;
+        async start(ctx) {
+            return `Bienvenue <b>${ctx.from.first_name}</b> sur Free Money Bot, 🚀\n\nJe peux te faire gagner jusqu’à 300 000 FCFA 💰 par mois.\n\nPour commencer, vous devez rejoindre tous mes canaux. 📲\n\n${await getLinks()}`;
         },
         bonus(hours, mins, secs) {
             return `🚀 Bonus Actuel Déjà Attribué!\n\n👾 Reviens dans exactement ${hours} heure(s) ${mins} minutes ${secs} secondes pour décrocher ton prochain bonus ! ⏳`
