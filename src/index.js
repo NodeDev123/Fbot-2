@@ -778,8 +778,11 @@ bot.on("callback_query", async (ctx) => {
                 })
 
                 if (!done) {
-                    const user = await ctx.telegram.getChatMember(task.chatId, ctx.from.id);
-                    done = !(user.status === "left" || user.status === "kicked");
+                    try {
+                        const user = await ctx.telegram.getChatMember(task.chatId, ctx.from.id);
+                        done = !(user.status === "left" || user.status === "kicked");
+                    } catch (error) { }
+
 
                     if (done) {
                         await prisma.userTasks.create({
