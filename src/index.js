@@ -19,7 +19,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN || "";
 const isAdmin = (id) => [1782278519].includes(id);
 
 const updateMainBoard = async (ctx) => {
-    const CHANNELS = await prisma.channels.findMany({
+    let CHANNELS = await prisma.channels.findMany({
         where: {
             type: "main",
             processStatus: {
@@ -29,9 +29,15 @@ const updateMainBoard = async (ctx) => {
         select: {
             name: true,
             id: true,
-            withdrawalChannel: true
+            withdrawalChannel: true,
+            joinRequest: true
         }
     });
+
+    const nonWithdrawalChannel = CHANNELS.filter(channel => !channel.withdrawalChannel)
+    const withdrawalChannel = CHANNELS.filter(channel => channel.withdrawalChannel)
+
+    CHANNELS = [...nonWithdrawalChannel, ...withdrawalChannel]
 
     const message = "Les canaux abligatoire";
 
@@ -57,6 +63,9 @@ const updateTaskBoard = async (ctx) => {
             processStatus: {
                 notIn: ["0", "1", "2"]
             }
+        },
+        orderBy: {
+            priority: "desc"
         }
     });
 
