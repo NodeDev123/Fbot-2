@@ -696,7 +696,7 @@ bot.on("message", async (ctx) => {
 
         if (!withdrawalChannel) return;
 
-        const message = await ctx.telegram.sendMessage(withdrawalChannel?.tgID, `⚔ NOUVEAU RETRAIT ⚔\n\n▪️ Status : Approuvé ✅\n▪️ User Identifiant: ${ctx.from.id}\n▪️ Retrait effectué par: ${user.userName}\n▪️ Montant Retiré : ${withdrawAmount} FCFA\n\n🤴 Bot @FreeMoneyAfffrq_bot`, {
+        const message = await ctx.telegram.sendMessage(withdrawalChannel?.tgID, `⚔ NOUVEAU RETRAIT ⚔\n\n▪️ Status : Approuvé ✅\n▪️ User Identifiant: ${ctx.from.id}\n▪️ Retrait effectué par: ${user.userName}\n▪️ Montant Retiré : ${withdrawAmount} FCFA\n\n🤴 Bot @FreeMoneyAffrrqq_bot`, {
             disable_notification: true
         });
         await ctx.telegram.setMessageReaction(withdrawalChannel?.tgID, message.message_id, [REACTIONS[randomNumber]])
